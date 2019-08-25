@@ -8,12 +8,12 @@ npm i dd-store --save
 
 ## 使用
 
-参考样例：[Github](https://github.com/linjc/dd-store/tree/master/examples)
+参考样例：[Example](https://github.com/linjc/dd-store/tree/master/examples)
 
 页面内使用
 
 ``` js
-import create from '../../../src/create'
+import create from 'dd-store'
 import store from '/store'
 
 // 使用create.Page方法创建页面
@@ -45,7 +45,7 @@ create.Page({
 
 组件内使用
 ``` js
-import create from '../../../src/create'
+import create from 'dd-store'
 
 // 使用create.Component方法创建组件，会自动从父级页面注入store，不需要手动注入
 create.Component({
