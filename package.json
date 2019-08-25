@@ -2,8 +2,8 @@
   "name": "dd-store",
   "version": "1.0.0",
   "description": "钉钉E应用状态管理 - 解决跨页面跨组件间通信，简洁小巧高性能",
-  "main": "index.js",
-  "module": "index.js",
+  "main": "src/create.js",
+  "module": "src/create.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

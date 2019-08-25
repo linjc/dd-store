@@ -13,15 +13,11 @@ create.Page({
     corpName: null,
 
     // 定义store.data没有的字段，则默认为页面私有状态，只能使用默认的this.setData(obj)方式更新
-    pageName: 'Index页面'
+    pageName: 'Test页面'
   },
 
   handleChange() {
     this.store.onChange()
-  },
-
-  toTestPage() {
-    dd.navigateTo({ url: '/pages/test/test' })
   }
 
 });

@@ -1,0 +1,5 @@
+{
+  "usingComponents":{
+    "comm-b":"/components/comm-b/comm-b"
+  }
+}

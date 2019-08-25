@@ -7,24 +7,22 @@ export default {
 }
 
 export function createPage(option) {
-  const store = option.store
-  if (!store.data || !Object.keys(store.data).length) {
-    return Page(option)
-  }
+  const store = option.store || {}
+  store.data = store.data || {}
   store.instances = store.instances || []
-  store.update = store.update || function() { return updateState(store) }
-  store.originData = store.originData || JSON.parse(JSON.stringify(store.data))
+  store.update = store.update || function () { return updateState(store) }
 
   const onLoad = option.onLoad
-  option.onLoad = function(query) {
+  option.onLoad = function (query) {
     store.instances.unshift(this)
     this.update = store.update
-    this.setData(store.data)
+    getInitState(store.data, option.data)
+    this.setData(option.data)
     onLoad && onLoad.call(this, query)
   }
 
   const onUnload = option.onUnload
-  option.onUnload = function() {
+  option.onUnload = function () {
     store.instances = store.instances.filter(vm => vm !== this)
     onUnload && onUnload.call(this)
   }
@@ -34,20 +32,19 @@ export function createPage(option) {
 
 export function createComponent(option) {
   const didMount = option.didMount
-  option.didMount = function() {
+  option.didMount = function () {
     const pages = getCurrentPages()
     const page = pages[pages.length - 1]
-    if (page.store && page.store.data && Object.keys(page.store.data).length) {
-      this.store = page.store
-      this.store.instances.unshift(this)
-      this.update = this.store.update
-      this.setData(this.store.data)
-    }
+    this.store = page.store
+    this.store.instances.unshift(this)
+    this.update = this.store.update
+    getInitState(this.store.data, option.data)
+    this.setData(option.data)
     didMount && didMount.call(this)
   }
 
   const didUnmount = option.didUnmount
-  option.didUnmount = function() {
+  option.didUnmount = function () {
     this.store.instances = this.store.instances.filter(vm => vm !== this)
     didUnmount && didUnmount.call(this)
   }
@@ -73,13 +70,27 @@ function setState(vm, data) {
 function updateState(store) {
   return new Promise((resolve, rejects) => {
     const promiseArr = []
-    const state = JSON.parse(JSON.stringify(store.data))
-    const diffState = getDiffState(state, store.originData)
     store.instances.forEach(vm => {
-      promiseArr.push(setState(vm, diffState))
+      const obj = {}
+      for (let key in vm.data) {
+        if (store.data.hasOwnProperty(key)) {
+          obj[key] = store.data[key]
+        }
+      }
+      if (Object.keys(obj).length > 0) {
+        const diffState = getDiffState(JSON.parse(JSON.stringify(obj)), vm.data)
+        promiseArr.push(setState(vm, diffState))
+      }
     })
-    store.originData = JSON.parse(JSON.stringify(store.data))
-    Promise.all(promiseArr).then(() => resolve(diffState), rejects)
+    Promise.all(promiseArr).then(resolve, rejects)
+  })
+}
+
+function getInitState(from, to) {
+  Object.keys(to).forEach(key => {
+    if (from.hasOwnProperty(key)) {
+      to[key] = JSON.parse(JSON.stringify(from[key]))
+    }
   })
 }
 
