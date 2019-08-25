@@ -1,6 +1,6 @@
 {
   "name": "dd-store",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "钉钉E应用状态管理 - 解决跨页面跨组件间通信，简洁小巧高性能",
   "main": "src/create.js",
   "module": "src/create.js",
@@ -11,6 +11,14 @@
     "name": "linjc",
     "url": "https://github.com/linjc"
   },
+  "keywords": [
+    "dingtalk",
+    "eapp",
+    "dd",
+    "dd-state",
+    "dd-store",
+    "dd-eapp"
+  ],
   "bugs": {
     "url": "https://github.com/linjc/dd-store/issues"
   },
