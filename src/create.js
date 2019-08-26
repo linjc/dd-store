@@ -7,23 +7,30 @@ export default {
 }
 
 export function createPage(option) {
-  const store = option.store || {}
+  const store = option.store = option.store || {}
   store.data = store.data || {}
-  store.instances = store.instances || []
+  store.instances = store.instances || {}
   store.update = store.update || function () { return updateState(store) }
 
   const onLoad = option.onLoad
   option.onLoad = function (query) {
-    store.instances.unshift(this)
+    store.instances[this.route] = []
+    store.instances[this.route].unshift(this)
     this.update = store.update
     getInitState(store.data, option.data)
     this.setData(option.data)
     onLoad && onLoad.call(this, query)
   }
 
+  const onShow = option.onShow
+  option.onShow = function () {
+    store.update()
+    onShow && onShow.call(this)
+  }
+
   const onUnload = option.onUnload
   option.onUnload = function () {
-    store.instances = store.instances.filter(vm => vm !== this)
+    store.instances[this.route] = []
     onUnload && onUnload.call(this)
   }
 
@@ -31,12 +38,13 @@ export function createPage(option) {
 }
 
 export function createComponent(option) {
+  
   const didMount = option.didMount
   option.didMount = function () {
     const pages = getCurrentPages()
-    const page = pages[pages.length - 1]
-    this.store = page.store
-    this.store.instances.unshift(this)
+    this.page = pages[pages.length - 1]
+    this.store = this.page.store
+    this.store.instances[this.page.route].unshift(this)
     this.update = this.store.update
     getInitState(this.store.data, option.data)
     this.setData(option.data)
@@ -45,7 +53,7 @@ export function createComponent(option) {
 
   const didUnmount = option.didUnmount
   option.didUnmount = function () {
-    this.store.instances = this.store.instances.filter(vm => vm !== this)
+    this.store.instances[this.page.route] = this.store.instances[this.page.route].filter(vm => vm !== this)
     didUnmount && didUnmount.call(this)
   }
 
@@ -53,25 +61,26 @@ export function createComponent(option) {
 }
 
 function setState(vm, data) {
-  if (!vm || !vm.setData || typeof data !== 'object') {
-    return Promise.resolve();
-  }
   vm._newData = Object.assign({}, vm._newData || {}, data)
   return new Promise(resolve => {
-    if (vm._newData && Object.keys(vm._newData).length) {
-      const diffState = getDiffState(JSON.parse(JSON.stringify(data)), vm.data)
-      vm.setData(diffState, resolve)
-      vm._newData = null
-    } else {
-      resolve()
+    if (vm._newData && Object.keys(vm._newData).length > 0) {
+      const diffState = getDiffState(JSON.parse(JSON.stringify(vm._newData)), vm.data)
+      if (Object.keys(diffState).length > 0) {
+        vm.setData(diffState, resolve)
+        vm._newData = null
+        return
+      }
     }
+    resolve()
   })
 }
 
 function updateState(store) {
+  const pages = getCurrentPages()
+  const currentPage = pages[pages.length - 1]
   return new Promise((resolve, rejects) => {
     const promiseArr = []
-    store.instances.forEach(vm => {
+    store.instances[currentPage.route].forEach(vm => {
       const obj = {}
       for (let key in vm.data) {
         if (store.data.hasOwnProperty(key)) {
@@ -137,13 +146,11 @@ function stateDiff(state, preState, path, newState) {
       addDiffState(newState, path, state)
       return
     }
-    if (path !== '') {
-      preState.forEach((item, index) => {
-        if (state[index] === undefined) {
-          state[index] = null // 已删除的属性设置为null
-        }
-      })
-    }
+    preState.forEach((item, index) => {
+      if (state[index] === undefined) {
+        state[index] = null // 已删除的属性设置为null
+      }
+    })
     state.forEach((item, index) => {
       stateDiff(item, preState[index], path + '[' + index + ']', newState)
     })
