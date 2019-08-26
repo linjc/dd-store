@@ -1,5 +1,5 @@
-// import create from 'dd-store'
-import create from '../../../src/create'
+// import create from '../../../src/create'
+import create from 'dd-store'
 import store from '/store'
 
 // 使用create.Page方法创建页面

@@ -38,7 +38,7 @@ export function createPage(option) {
 }
 
 export function createComponent(option) {
-  
+
   const didMount = option.didMount
   option.didMount = function () {
     const pages = getCurrentPages()
@@ -78,21 +78,19 @@ function setState(vm, data) {
 function updateState(store) {
   const pages = getCurrentPages()
   const currentPage = pages[pages.length - 1]
-  return new Promise((resolve, rejects) => {
-    const promiseArr = []
-    store.instances[currentPage.route].forEach(vm => {
-      const obj = {}
-      for (let key in vm.data) {
-        if (store.data.hasOwnProperty(key)) {
-          obj[key] = store.data[key]
-        }
+  const promiseArr = []
+  store.instances[currentPage.route].forEach(vm => {
+    const obj = {}
+    for (let key in vm.data) {
+      if (store.data.hasOwnProperty(key)) {
+        obj[key] = store.data[key]
       }
-      if (Object.keys(obj).length > 0) {
-        promiseArr.push(setState(vm, obj))
-      }
-    })
-    Promise.all(promiseArr).then(resolve, rejects)
+    }
+    if (Object.keys(obj).length > 0) {
+      promiseArr.push(setState(vm, obj))
+    }
   })
+  return Promise.all(promiseArr)
 }
 
 function getInitState(from, to) {
