@@ -59,7 +59,8 @@ function setState(vm, data) {
   vm._newData = Object.assign({}, vm._newData || {}, data)
   return new Promise(resolve => {
     if (vm._newData && Object.keys(vm._newData).length) {
-      vm.setData(vm._newData, resolve)
+      const diffState = getDiffState(JSON.parse(JSON.stringify(data)), vm.data)
+      vm.setData(diffState, resolve)
       vm._newData = null
     } else {
       resolve()
@@ -78,8 +79,7 @@ function updateState(store) {
         }
       }
       if (Object.keys(obj).length > 0) {
-        const diffState = getDiffState(JSON.parse(JSON.stringify(obj)), vm.data)
-        promiseArr.push(setState(vm, diffState))
+        promiseArr.push(setState(vm, obj))
       }
     })
     Promise.all(promiseArr).then(resolve, rejects)

@@ -17,7 +17,11 @@
     "dd",
     "dd-state",
     "dd-store",
-    "dd-eapp"
+    "dd-eapp",
+    "E应用",
+    "E应用状态管理",
+    "钉钉小程序",
+    "小程序状态管理"
   ],
   "bugs": {
     "url": "https://github.com/linjc/dd-store/issues"
