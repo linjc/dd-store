@@ -30,19 +30,17 @@ export function createPage(option) {
 
   const onUnload = option.onUnload
   option.onUnload = function () {
-    store.instances[this.route] = []
     onUnload && onUnload.call(this)
+    store.instances[this.route] = []
   }
 
   Page(option)
 }
 
 export function createComponent(option) {
-
   const didMount = option.didMount
   option.didMount = function () {
-    const pages = getCurrentPages()
-    this.page = pages[pages.length - 1]
+    this.page = getPage()
     this.store = this.page.store
     this.store.instances[this.page.route].unshift(this)
     this.update = this.store.update
@@ -53,21 +51,25 @@ export function createComponent(option) {
 
   const didUnmount = option.didUnmount
   option.didUnmount = function () {
-    this.store.instances[this.page.route] = this.store.instances[this.page.route].filter(vm => vm !== this)
     didUnmount && didUnmount.call(this)
+    this.store.instances[this.page.route] = this.store.instances[this.page.route].filter(vm => vm !== this)
   }
 
   Component(option)
 }
 
+function getPage() {
+  return getCurrentPages()[getCurrentPages().length - 1]
+}
+
 function setState(vm, data) {
-  vm._newData = Object.assign({}, vm._newData || {}, data)
+  vm._newData = Object.assign({}, vm._newData, data)
   return new Promise(resolve => {
     if (vm._newData && Object.keys(vm._newData).length > 0) {
       const diffState = getDiffState(JSON.parse(JSON.stringify(vm._newData)), vm.data)
+      vm._newData = null
       if (Object.keys(diffState).length > 0) {
         vm.setData(diffState, resolve)
-        vm._newData = null
         return
       }
     }
@@ -76,10 +78,8 @@ function setState(vm, data) {
 }
 
 function updateState(store) {
-  const pages = getCurrentPages()
-  const currentPage = pages[pages.length - 1]
   const promiseArr = []
-  store.instances[currentPage.route].forEach(vm => {
+  (store.instances[getPage().route] || []).forEach(vm => {
     const obj = {}
     for (let key in vm.data) {
       if (store.data.hasOwnProperty(key)) {
