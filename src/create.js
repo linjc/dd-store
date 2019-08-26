@@ -7,7 +7,7 @@ export default {
 }
 
 export function createPage(option) {
-  const store = option.store = option.store || {}
+  const store = option.store = (option.store || getApp().store || {})
   store.data = store.data || {}
   store.instances = store.instances || {}
   store.update = store.update || function () { return updateState(store) }
