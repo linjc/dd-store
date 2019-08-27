@@ -2,6 +2,7 @@
 node_modules
 /dist
 .tea
+package-lock.json
 
 # local env files
 .env.local

@@ -13,7 +13,7 @@ create.Page({
   },
 
   handleChange() {
-    this.store.onChange()
+    this.store.onChangeName()
   }
 
 });

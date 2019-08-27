@@ -79,7 +79,8 @@ function setState(vm, data) {
 
 function updateState(store) {
   const promiseArr = []
-  (store.instances[getPage().route] || []).forEach(vm => {
+  const vms = store.instances[getPage().route] || []
+  vms.forEach(vm => {
     const obj = {}
     for (let key in vm.data) {
       if (store.data.hasOwnProperty(key)) {

@@ -1,6 +1,6 @@
 {
   "name": "dd-store",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "钉钉E应用状态管理 - 解决跨页面跨组件间通信，简洁小巧高性能",
   "main": "src/create.js",
   "module": "src/create.js",
@@ -21,7 +21,9 @@
     "E应用",
     "E应用状态管理",
     "钉钉小程序",
-    "小程序状态管理"
+    "小程序状态管理",
+    "全局状态管理",
+    "跨组件通信"
   ],
   "bugs": {
     "url": "https://github.com/linjc/dd-store/issues"

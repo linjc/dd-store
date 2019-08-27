@@ -28,7 +28,7 @@ class Store {
     deptList: [{ id: 1, name: '产品经理' }, { id: 2, name: '前端攻城狮' }, { id: 3, name: '后端攻城狮' }]
   }
 
-  onChange() {
+  onChangeName() {
     const ran = Math.floor(Math.random() * 10000)
     this.data.userName = '李狗蛋' + ran
     this.data.corpName = '富土康' + ran
@@ -78,7 +78,7 @@ create.Page({
 
   data: {
     // 按需注入共享状态（与store.data内属性同名即可），可以直接修改store.data值并通过this.update()方式更新
-    // 此处只定义需要的状态，设置的默认值无效，如需设置请在store.data内设置
+    // 此处只定义需要的属性，设置的默认值无效，如需设置请在store.data内设置
     userName: null,
     corpName: null,
 
@@ -88,7 +88,7 @@ create.Page({
 
   // 在store内实现状态变更
   handleChange() {
-    this.store.onChange()
+    this.store.onChangeName()
   },
 
   // 组件内实现状态变更
