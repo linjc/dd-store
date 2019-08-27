@@ -1,6 +1,6 @@
 {
   "name": "dd-store",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "钉钉E应用状态管理 - 解决跨页面跨组件间通信，简洁小巧高性能",
   "main": "src/create.js",
   "module": "src/create.js",
@@ -12,21 +12,29 @@
     "url": "https://github.com/linjc"
   },
   "keywords": [
-    "dingtalk",
-    "eapp",
-    "dd",
-    "dd-state",
     "dd-store",
+    "dd-state",
+    "eapp-store",
+    "eapp-state",
     "dd-eapp",
     "E应用",
+    "状态管理库",
     "E应用状态管理",
     "钉钉小程序",
     "小程序状态管理",
     "全局状态管理",
-    "跨组件通信"
+    "跨组件通信",
+    "dingtalk",
+    "eapp",
+    "dd"
   ],
+  "homepage": "https://github.com/linjc/dd-store",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/linjc/dd-store.git"
+  },
   "bugs": {
     "url": "https://github.com/linjc/dd-store/issues"
   },
-  "license": "ISC"
+  "license": "MIT"
 }
