@@ -30,7 +30,7 @@ westore采用的就是这种方案，该方案好处是适用范围广，各种�
 在默认方案的基础上，增加了每个页面可以根据需要引入独立的store，使用方式和默认方案一样，但相比默认方案，大大减少了每次diff比对的数据量，一定程度提升了性能；方法可以直接通过store调用不需要包裹或引入调用，更加便利；视图数据绑定少了一层嵌套，代码更加美观。不过虽然优化了上面三个问题点，却存在一个比较大的问题，就是全局store和页面store二者只能选其一，不能同时使用，一般用在页面不需要使用任何全局状态的场景。如果页面需要使用到某个全局状态，就只能把整个页面状态合并到全局状态上使用，这样可能越往后，又变成使用默认方案了。为了解决这个问题，于是有了方案三。
 
 #### 方案三（推荐）：支持多例store，并支持页面同时使用全局store和页面store。
-基于方案二，将全局store命名为globalStore，与页面store区分开来，并修改了使用方式，将globalStore.data值整体注入页面/组件的data上，并指定属性名为globalData，通过globalData.xxx方式绑定到视图上。需要修改全局状态，只要修改globalStore.data内的值，然后this.update()即可。
+在方案二的基础上，将全局store命名为globalStore，与页面store区分开来，并修改了使用方式，让页面可以同时是使用页面store和全局store，解决了上面两个方案存在的问题，并保留了它们的优势。
 
 ## 安装
 ``` js
@@ -44,7 +44,7 @@ npm i dd-store --save
 * this.update() 更新页面或组件，在页面、组件、store内使用
 * store.update() 在非页面非组件非store的js文件中使用，需要引入store文件
 
-另外添加配置option.useAll = true（默认false)，则会自动注入全局globalStore.data和全部store.data值到页面/组件，无需手动声明依赖
+另外创建页面/组件时可选配置option.useAll，如果配置为true，则会自动注入全局globalStore.data和全部store.data值到页面/组件，无需手动声明依赖
 
 ## 使用
 
@@ -302,6 +302,7 @@ globalStore.update()
 ## 快捷链接
 
 - [Example示例](https://github.com/linjc/dd-store/tree/master/examples)
-- [仓库地址](https://github.com/linjc/dd-store)
-- [NPM地址](https://www.npmjs.com/package/dd-store)
+- [Github仓库](https://github.com/linjc/dd-store)
+- [Gitee仓库](https://gitee.com/ljc310/dd-store)
+- [NPM包地址](https://www.npmjs.com/package/dd-store)
 - [Issues反馈](https://github.com/linjc/dd-store/issues)
