@@ -114,7 +114,7 @@ function getInitState(from, to, useAll) {
       to[key] = fromObj[key]
     })
   } else {
-    Object.keys(to).forEach(key => {
+    Object.keys(to||{}).forEach(key => {
       fromObj.hasOwnProperty(key) && (to[key] = fromObj[key])
     })
   }
@@ -140,7 +140,7 @@ function stateDiff(state, preState, path, newState) {
   const preStateType = getType(preState)
   if (stateType === TYPE_OBJECT) {
     const stateLen = Object.keys(state).length
-    const preStateLen = Object.keys(preState).length
+    const preStateLen = Object.keys(preState||{}).length
     if (path !== '') {
       if (preStateType !== TYPE_OBJECT || stateLen < preStateLen || stateLen === 0 || preStateLen === 0) {
         addDiffState(newState, path, state)
