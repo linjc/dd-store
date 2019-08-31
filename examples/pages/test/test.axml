@@ -1,7 +1,0 @@
-<view>
-  <view>当前页面：{{pageName}}</view>
-  <view>姓名：{{userName}}</view>
-  <view>公司：{{corpName}}</view>
-  <button style="display: inline-block" size="mini" type="primary" onTap="handleChange">在store内更改</button>
-  <comm-b />
-</view>

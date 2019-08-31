@@ -1,8 +1,0 @@
-<view>
-  <view style="margin-top: 80rpx">当前组件：{{commName}}</view>
-  <view style="margin-top: 30rpx">人员列表：</view>
-  <view a:for="{{userList}}">{{item.name}}</view>
-  <view style="margin-top: 30rpx">部门列表：</view>
-  <view a:for="{{deptList}}">{{item.name}}</view>
-  <button style="display: inline-block" size="mini" type="primary" onTap="handleChange">在组件内更改</button>
-</view>

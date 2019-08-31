@@ -1,28 +1,33 @@
 import create from 'dd-store'
-// import otherStore from '/otherStore'
+import indexStore from '/stores/indexStore'
 
-// 使用create.Page方法创建页面
 create.Page({
-  // 此处注入的store会覆盖app注入的全局store，开发者可以视业务场景自由选择
-  // 应用场景：页面业务比较独立，用不到全局store，但又存在多页面、组件状态共享
-  // store: otherStore, 
+  // 是否自动注入所有store.data状态和全局状态globalData
+  // useAll: true,
+
+  // 注入页面store
+  store: indexStore,
 
   data: {
-    // 按需注入共享状态（与store.data内属性同名即可），可以直接修改store值并通过this.update()方式更新
-    // 此处只定义需要的状态，设置的默认值无效，如需设置请在store.data内设置
-    userName: null,
-    corpName: null,
+    // 声明使用全局共享状态，如果设置useAll为true，则不声明就可以使用
+    // 为了避免与页面store.data内属性命名冲突，globalStore.data整个赋给globalData，即globalData = globalStore.data
+    globalData: null,
+
+    // 按需声明状态属性，如果设置useAll为true，则自动注入store.data全部属性，无需一个个添加
+    // 设置的默认值无效，如需设置请在store.data内设置
+    title: null,
 
     // 定义store.data没有的属性，则默认为页面私有状态，只能使用默认的this.setData(obj)方式更新
-    pageName: 'Index页面'
+    privateData: '私有状态'
   },
 
-  handleChange() {
-    this.store.onChangeName()
+  handleChangeTitle() {
+    this.store.data.title = '首页' + Math.floor(Math.random() * 1000)
+    this.update()
   },
 
-  toTestPage() {
-    dd.navigateTo({ url: '/pages/test/test' })
+  goPage() {
+    dd.navigateTo({ url: '/pages/hello/hello' })
   }
 
 });

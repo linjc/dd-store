@@ -1,9 +1,9 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/test/test"
+    "pages/hello/hello"
   ],
   "window": {
-    "defaultTitle": "My App"
+    "defaultTitle": "E应用状态管理"
   }
 }

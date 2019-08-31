@@ -1,10 +1,10 @@
-<view>
-  <view>当前页面：{{pageName}}</view>
-  <view>姓名：{{userName}}</view>
-  <view>公司：{{corpName}}</view>
-  <button style="display: inline-block" size="mini" type="primary" onTap="handleChange">在store内更改</button>
-  <comm-a />
-
-  <button style="margin-top: 80rpx" size="default" type="primary" onTap="toTestPage">Test页面</button>
-
+<view class="index">
+  <header />
+  <view class="index-title">{{title}}</view>
+  <view>
+    <button type="primary" style="margin: auto; width: 300rpx" onTap="handleChangeTitle">更改标题</button>
+  </view>
+  <view class="index-footer">
+    <button type="primary" onTap="goPage">下一个页面</button>
+  </view>
 </view>
