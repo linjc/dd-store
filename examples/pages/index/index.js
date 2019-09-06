@@ -16,7 +16,8 @@ create.Page({
     // 按需声明状态属性，如果设置useAll为true，则自动注入store.data全部属性，无需一个个添加
     // 设置的默认值无效，如需设置请在store.data内设置
     title: null,
-
+    a: null,
+    
     // 定义store.data没有的属性，则默认为页面私有状态，只能使用默认的this.setData(obj)方式更新
     privateData: '私有状态'
   },

@@ -10,11 +10,7 @@ create.Page({
   data: {},
 
   onLoad() { },
-
-  handleChangeLang() {
-    this.globalStore.onChangeLang()
-  },
-
+  
   handleChangeTitle() {
     this.store.onChangeTitle()
   },

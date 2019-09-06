@@ -1,6 +1,7 @@
 <view class="index">
   <header />
   <view class="index-title">{{title}}</view>
+  <view>{{a.b}}</view>
   <view>
     <button type="primary" style="margin: auto; width: 300rpx" onTap="handleChangeTitle">更改标题</button>
   </view>

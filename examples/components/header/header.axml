@@ -3,8 +3,7 @@
     当前组件所在页面：{{title}}
   </view>
   <view>
-    <view>我是{{globalData.userName}}</view>
-    <view>我在{{globalData.corpName}}的{{globalData.deptName}}工作</view>
+    <view>{{globalData.description}}</view>
   </view>
   <view style="margin: 20rpx">
     <view style="color: blue">当前语言：{{globalData.language==='zh_cn'?'中文':'英文'}}</view>
