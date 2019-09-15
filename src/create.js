@@ -51,12 +51,12 @@ export function createPage(option) {
 export function createComponent(option) {
   const didMount = option.didMount
   option.didMount = function() {
-    this.page = getPage()
-    if (this.page.store) { // 兼容组件被常规页面使用的情况
-      this.globalStore = this.page.globalStore
-      this.store = this.page.store
-      this.update = this.page.update
-      this.store._instances[this.page.route].unshift(this)
+    this._page = getPage()
+    if (this._page.store) { // 兼容组件被常规页面使用的情况
+      this.globalStore = this._page.globalStore
+      this.store = this._page.store
+      this.update = this._page.update
+      this.store._instances[this._page.route].unshift(this)
       getInitState(this.store.data, option.data, option.useAll)
       this.setData(option.data)
     }
@@ -67,7 +67,7 @@ export function createComponent(option) {
   option.didUnmount = function() {
     didUnmount && didUnmount.call(this)
     if (this.store) {
-      this.store._instances[this.page.route] = this.store._instances[this.page.route].filter(vm => vm !== this)
+      this.store._instances[this._page.route] = this.store._instances[this._page.route].filter(vm => vm !== this)
     }
   }
 

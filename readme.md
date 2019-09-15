@@ -6,7 +6,7 @@ E应用是钉钉主推的开发企业应用的小程序框架，公司好几款�
 所以要在E应用上使用，还得改动一下，于是在看了源码之后，基于其原理重写了一版，并去除了一些其他功能，只保留状态管理部分，总代码量从500行精简到了200行，另外根据自身理解做了如下优化改进：
 
 ### 1、优化this.update效率
-每次this.update()的时候，对所有已打开的页面进行更新渲染，调整为只对当前页面进行渲染，其他页面只在再次显示的时候进行更新。这样可以大大减少同时setData的频次，提高渲染效率。
+每次this.update()的时候，只对当前页面进行渲染，其他后台态页面只在再次显示的时候进行更新。这样可以大大减少同时setData的频次，提高渲染效率。
 
 ### 2、提供多种store使用方案
 #### 默认方案：采用单例store，即全局只使用一个store。
@@ -207,7 +207,7 @@ create.Page({
 
 #### 在app.js中注入globalStore
 
-将globalStore挂载在app上，所有create.Page()创建的页面都能通过this.globalStore取到globalStore的引用。所有create.Component()创建的组件也会自动从根节点注入globalStore。只要在页面/组件data上声明globalData就可以使用，如果配置了useAll=true，则无需声明即可使用。
+将globalStore挂载在app上，所有create.Page()创建的页面都能通过this.globalStore取到globalStore的引用。所有create.Component()创建的组件也会自动从根节点注入globalStore。
 
 ``` js
 import globalStore from '/stores/globalStore'
@@ -223,6 +223,9 @@ App({
 ``` 
 
 #### 页面使用
+
+只要在页面data上声明globalData就可以使用，如果配置了useAll=true，则无需声明即可使用。
+
 ``` js
 import create from 'dd-store'
 import pageStore from '/stores/pageStore'
@@ -250,6 +253,8 @@ create.Page({
 
 ```
 #### 组件使用
+
+只要在组件data上声明globalData就可以使用，如果配置了useAll=true，则无需声明即可使用。
 
 ``` js
 import create from 'dd-store'
