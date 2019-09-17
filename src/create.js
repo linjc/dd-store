@@ -18,6 +18,7 @@ export function createForAllComponent() {
 }
 
 export function createPage(option) {
+  option.data = option.data || {}
   const globalStore = getApp().globalStore || {}
   const store = option.store = (option.store || getApp().store || {})
   store.data = store.data || {}
@@ -59,6 +60,7 @@ export function createPage(option) {
 }
 
 export function createComponent(option) {
+  option.data = option.data || {}
   const didMount = option.didMount
   option.didMount = function() {
     this._page = getPage()
@@ -172,11 +174,9 @@ function updateState(store) {
 function getInitState(from, to, useAll) {
   const fromObj = getAllData(from)
   if (useAll) {
-    Object.keys(fromObj).forEach(key => {
-      to[key] = fromObj[key]
-    })
+    Object.assign(to, fromObj)
   } else {
-    Object.keys(to||{}).forEach(key => {
+    Object.keys(to).forEach(key => {
       fromObj.hasOwnProperty(key) && (to[key] = fromObj[key])
     })
   }
