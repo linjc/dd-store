@@ -1,10 +1,20 @@
 const TYPE_ARRAY = '[object Array]'
 const TYPE_OBJECT = '[object Object]'
 const TYPE_FUNCTION = '[object Function]'
+const originPage = Page
+const originComponent = Component
 
 export default {
   Page: createPage,
   Component: createComponent
+}
+
+export function createForAllPage() {
+  Page = createPage
+}
+
+export function createForAllComponent() {
+  Component = createComponent
 }
 
 export function createPage(option) {
@@ -13,11 +23,11 @@ export function createPage(option) {
   store.data = store.data || {}
   store._instances = store._instances || {}
   store.update = store.update || function() { return updateState(store) }
-  if (!store._isReadyComputed && Object.keys(store.data).length > 0) {
+  if (!store._isReadyComputed) {
     setComputed(store.data, store.data)
     store._isReadyComputed = true
   }
-  if (!globalStore._isReadyComputed && globalStore.data && Object.keys(globalStore.data).length > 0) {
+  if (!globalStore._isReadyComputed) {
     setComputed(globalStore.data, globalStore.data)
     globalStore._isReadyComputed = true
   }
@@ -45,7 +55,7 @@ export function createPage(option) {
     store._instances[this.route] = []
   }
 
-  Page(option)
+  originPage(option)
 }
 
 export function createComponent(option) {
@@ -71,7 +81,7 @@ export function createComponent(option) {
     }
   }
 
-  Component(option)
+  originComponent(option)
 }
 
 function setComputed(storeData, value, obj, key) {
