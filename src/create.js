@@ -135,7 +135,7 @@ function setState(vm, data) {
 
 function getAllData(storeData) {
   const globalStore = getApp().globalStore
-  if (globalStore && globalStore.data && Object.keys(globalStore.data).length > 0) {
+  if (globalStore && globalStore.data) {
     storeData = Object.assign({ globalData: globalStore.data }, storeData)
   }
   return deepCopy(storeData)
@@ -150,11 +150,11 @@ function updateState(store) {
     if (vm.useAll) {
       obj = storeData
     } else {
-      for (let key in vm.data) {
+      Object.keys(vm.data).forEach(key => {
         storeData.hasOwnProperty(key) && (obj[key] = storeData[key])
-      }
+      })
     }
-    Object.keys(obj).length > 0 && promiseArr.push(setState(vm, obj))
+    promiseArr.push(setState(vm, obj))
   })
   return Promise.all(promiseArr)
 }
@@ -191,21 +191,23 @@ function stateDiff(state, preState, path, newState) {
   const stateType = getType(state)
   const preStateType = getType(preState)
   if (stateType === TYPE_OBJECT) {
-    const stateLen = Object.keys(state).length
-    const preStateLen = Object.keys(preState||{}).length
+    const stateKeys = Object.keys(state)
+    const preStateKeys = Object.keys(preState||{})
+    const stateLen = stateKeys.length
+    const preStateLen = preStateKeys.length
     if (path !== '') {
       if (preStateType !== TYPE_OBJECT || stateLen < preStateLen || stateLen === 0 || preStateLen === 0) {
         addDiffState(newState, path, state)
         return
       }
-      for (let key in preState) {
+      preStateKeys.forEach(key => {
         state[key] === undefined && (state[key] = null) // 已删除的属性设置为null
-      }
+      })
     }
-    for (let key in state) {
+    stateKeys.forEach(key => {
       const subPath = path === '' ? key : path + '.' + key
       stateDiff(state[key], preState[key], subPath, newState)
-    }
+    })
     return
   }
   if (stateType === TYPE_ARRAY) {
