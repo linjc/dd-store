@@ -111,31 +111,31 @@ function setComputed(storeData, value, obj, key) {
 
 function deepCopy(data) {
   const type = getType(data)
-  let obj = data
   if (type === TYPE_OBJECT) {
-    obj = {}
-    Object.keys(data).forEach(key => {
-      obj[key] = deepCopy(data[key])
-    })
-  } else if (type === TYPE_ARRAY) {
-    obj = []
-    data.forEach((item, index) => {
-      obj[index] = deepCopy(item)
-    })
+    const obj = {}
+    Object.keys(data).forEach(key => obj[key] = deepCopy(data[key]))
+    return obj
   }
-  return obj
+  if (type === TYPE_ARRAY) {
+    const arr = []
+    data.forEach((item, index) => arr[index] = deepCopy(item))
+    return arr
+  }
+  return data
 }
 
 function getPage() {
-  return getCurrentPages()[getCurrentPages().length - 1]
+  const pages = getCurrentPages()
+  return pages[pages.length - 1]
 }
 
 function setState(vm, data) {
-  vm._new_data = Object.assign({}, vm._new_data, data)
+  vm._new_data = vm._new_data || {}
+  Object.assign(vm._new_data, data)
   return new Promise(resolve => {
-    if (vm._new_data && Object.keys(vm._new_data).length > 0) {
+    if (Object.keys(vm._new_data).length > 0) {
       const diffState = getDiffState(vm._new_data, vm.data)
-      vm._new_data = null
+      vm._new_data = {}
       if (Object.keys(diffState).length > 0) {
         vm.setData(diffState, resolve)
         return
@@ -148,9 +148,9 @@ function setState(vm, data) {
 function getAllData(storeData) {
   const globalStore = getApp().globalStore
   if (globalStore && globalStore.data) {
-    storeData = Object.assign({ globalData: globalStore.data }, storeData)
+    return Object.assign({ globalData: globalStore.data }, storeData)
   }
-  return deepCopy(storeData)
+  return storeData
 }
 
 function updateState(store) {
@@ -162,9 +162,7 @@ function updateState(store) {
     if (vm.useAll) {
       obj = storeData
     } else {
-      Object.keys(vm.data).forEach(key => {
-        storeData.hasOwnProperty(key) && (obj[key] = storeData[key])
-      })
+      Object.keys(vm.data).forEach(key => storeData.hasOwnProperty(key) && (obj[key] = storeData[key]))
     }
     promiseArr.push(setState(vm, obj))
   })
@@ -174,17 +172,15 @@ function updateState(store) {
 function getInitState(from, to, useAll) {
   const fromObj = getAllData(from)
   if (useAll) {
-    Object.assign(to, fromObj)
+    Object.assign(to, deepCopy(fromObj))
   } else {
-    Object.keys(to).forEach(key => {
-      fromObj.hasOwnProperty(key) && (to[key] = fromObj[key])
-    })
+    Object.keys(to).forEach(key => fromObj.hasOwnProperty(key) && (to[key] = deepCopy(fromObj[key])))
   }
 }
 
 function getDiffState(state, preState) {
   const newState = {}
-  stateDiff(state, preState, '', newState)
+  stateDiff(deepCopy(state), preState, '', newState)
   return newState
 }
 
