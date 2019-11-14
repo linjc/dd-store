@@ -19,11 +19,11 @@ export function createForAllComponent() {
 
 export function createPage(option) {
   option.data = option.data || {}
-  const globalStore = getApp().globalStore || {}
+  const globalStore = option.globalStore = getApp().globalStore || {}
   const store = option.store = (option.store || getApp().store || {})
   store.data = store.data || {}
   store._instances = store._instances || {}
-  store.update = store.update || function() { return updateState(store) }
+  store.update = store.update || function () { return updateState(store) }
   if (!store._isReadyComputed) {
     setComputed(store.data, store.data)
     store._isReadyComputed = true
@@ -34,24 +34,23 @@ export function createPage(option) {
   }
 
   const onLoad = option.onLoad
-  option.onLoad = function(query) {
+  option.onLoad = function (query) {
     store._instances[this.route] = [this]
     globalStore.update = this.update = store.update
-    this.globalStore = globalStore
     getInitState(store.data, option.data, option.useAll)
     this.setData(option.data)
     onLoad && onLoad.call(this, query)
   }
 
   const onShow = option.onShow
-  option.onShow = function() {
+  option.onShow = function () {
     globalStore.update = store.update
     store.update()
     onShow && onShow.call(this)
   }
 
   const onUnload = option.onUnload
-  option.onUnload = function() {
+  option.onUnload = function () {
     onUnload && onUnload.call(this)
     store._instances[this.route] = []
   }
@@ -62,7 +61,7 @@ export function createPage(option) {
 export function createComponent(option) {
   option.data = option.data || {}
   const didMount = option.didMount
-  option.didMount = function() {
+  option.didMount = function () {
     this._page = getPage()
     if (this._page.store) { // 兼容组件被常规页面使用的情况
       this.globalStore = this._page.globalStore
@@ -76,7 +75,7 @@ export function createComponent(option) {
   }
 
   const didUnmount = option.didUnmount
-  option.didUnmount = function() {
+  option.didUnmount = function () {
     didUnmount && didUnmount.call(this)
     if (this.store) {
       this.store._instances[this._page.route] = this.store._instances[this._page.route].filter(vm => vm !== this)
@@ -91,10 +90,10 @@ function setComputed(storeData, value, obj, key) {
   if (type === TYPE_FUNCTION) {
     Object.defineProperty(obj, key, {
       enumerable: true,
-      get: function() {
+      get: function () {
         return value.call(storeData)
       },
-      set: function() {
+      set: function () {
         console.warn('计算属性不支持重新赋值')
       }
     })
@@ -136,10 +135,8 @@ function setState(vm, data) {
     if (Object.keys(vm._new_data).length > 0) {
       const diffState = getDiffState(vm._new_data, vm.data)
       vm._new_data = {}
-      if (Object.keys(diffState).length > 0) {
-        vm.setData(diffState, resolve)
-        return
-      }
+      vm.setData(diffState, resolve)
+      return
     }
     resolve()
   })
@@ -198,7 +195,7 @@ function stateDiff(state, preState, path, newState) {
   const preStateType = getType(preState)
   if (stateType === TYPE_OBJECT) {
     const stateKeys = Object.keys(state)
-    const preStateKeys = Object.keys(preState||{})
+    const preStateKeys = Object.keys(preState || {})
     const stateLen = stateKeys.length
     const preStateLen = preStateKeys.length
     if (path !== '') {
