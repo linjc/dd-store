@@ -4,7 +4,7 @@ create.Component({
   useAll: true, // 自动注入根页面store.data的所有状态和全局globalStore
   mixins: [],
   data: {
-    // globalData: null,
+    // $data: null,
     // title: null
   },
   props: {},

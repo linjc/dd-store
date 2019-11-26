@@ -1,6 +1,6 @@
 {
   "name": "dd-store",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "钉钉E应用状态管理 - 解决跨页面跨组件间通信，简洁小巧高性能",
   "main": "dist/create.js",
   "module": "dist/create.js",

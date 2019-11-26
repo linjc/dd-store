@@ -205,7 +205,7 @@ create.Page({
 ```
 
 ### 使用方案三（推荐）
-方案三基于方案二将全局store命名为globalStore，并修改了使用方式，将globalStore.data值整体注入页面/组件的data上，并指定属性名为globalData，通过globalData.xxx方式绑定到视图上。
+方案三基于方案二将全局store命名为globalStore，并修改了使用方式，将globalStore.data值整体注入页面/组件的data上，并指定属性名为$data（1.6.0前的版本为globalData），通过$data.xxx方式绑定到视图上。
 
 #### 在app.js中注入globalStore
 
@@ -226,7 +226,7 @@ App({
 
 #### 页面使用
 
-只要在页面data上声明globalData就可以使用，如果配置了useAll=true，则无需声明即可使用。
+只要在页面data上声明$data就可以使用，如果配置了useAll=true，则无需声明即可使用。
 
 ``` js
 import create from 'dd-store'
@@ -236,12 +236,12 @@ create.Page({
   // 添加页面store
   store: pageStore,
 
-  // 自动注入globalData 和 store.data全部状态，默认false
+  // 自动注入$data 和 store.data全部状态，默认false
   // useAll: true, 
 
   data: {
     // 按需声明使用全局状态
-    globalData: null,
+    $data: null,
 
     // 按需声明状态属性，设置的默认值无效，如需设置请在store.data内设置
     userName: null,
@@ -256,19 +256,19 @@ create.Page({
 ```
 #### 组件使用
 
-只要在组件data上声明globalData就可以使用，如果配置了useAll=true，则无需声明即可使用。
+只要在组件data上声明$data就可以使用，如果配置了useAll=true，则无需声明即可使用。
 
 ``` js
 import create from 'dd-store'
 
 create.Component({
 
-  // 自动注入globalData 和 store.data全部状态，默认false
+  // 自动注入$data 和 store.data全部状态，默认false
   // useAll: true, 
 
   data: {
     // 按需声明使用全局状态
-    globalData: null,
+    $data: null,
 
     // 此处只按需声明状态属性，设置的默认值无效，如需设置请在store.data内设置
     userList: null,

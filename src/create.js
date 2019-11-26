@@ -145,7 +145,7 @@ function setState(vm, data) {
 function getAllData(storeData) {
   const globalStore = getApp().globalStore
   if (globalStore && globalStore.data) {
-    return Object.assign({ globalData: globalStore.data }, storeData)
+    return Object.assign({ globalData: globalStore.data, $data: globalStore.data }, storeData)
   }
   return storeData
 }
