@@ -1,20 +1,10 @@
 const TYPE_ARRAY = '[object Array]'
 const TYPE_OBJECT = '[object Object]'
 const TYPE_FUNCTION = '[object Function]'
-const originPage = Page
-const originComponent = Component
 
 export default {
   Page: createPage,
   Component: createComponent
-}
-
-export function createForAllPage() {
-  Page = createPage
-}
-
-export function createForAllComponent() {
-  Component = createComponent
 }
 
 export function createPage(option) {
@@ -55,7 +45,7 @@ export function createPage(option) {
     store._instances[this.route] = []
   }
 
-  originPage(option)
+  Page(option)
 }
 
 export function createComponent(option) {
@@ -82,7 +72,7 @@ export function createComponent(option) {
     }
   }
 
-  originComponent(option)
+  Component(option)
 }
 
 function setComputed(storeData, value, obj, key) {
