@@ -321,6 +321,6 @@ globalStore.update()
 
 - [Example示例](https://github.com/linjc/dd-store/tree/master/examples)
 - [Github仓库](https://github.com/linjc/dd-store)
-- [Gitee仓库](https://gitee.com/ljc310/dd-store)
+- [Gitee仓库](https://gitee.com/l2j2c3/dd-store)
 - [NPM包地址](https://www.npmjs.com/package/dd-store)
 - [Issues反馈](https://github.com/linjc/dd-store/issues)
