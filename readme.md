@@ -93,15 +93,13 @@ export default new Store()
 将全局store挂载在app上，所有create.Page()创建的页面都能通过this.store取到全局store的引用。
 
 ``` js
+import { setStore } from 'dd-store'
 import store from '/store'
 
-App({
+setStore(store)
 
-  store,
-  
-  onLaunch(options) {
-    
-  },
+App({
+  onLaunch(options) {},
 });
 ``` 
 
@@ -212,15 +210,13 @@ create.Page({
 将globalStore挂载在app上，所有create.Page()创建的页面都能通过this.globalStore取到globalStore的引用。所有create.Component()创建的组件也会自动从根节点注入globalStore。
 
 ``` js
+import { setGlobalStore } from 'dd-store'
 import globalStore from '/stores/globalStore'
 
-App({
+setGlobalStore(globalStore)
 
-  globalStore,
-  
-  onLaunch(options) {
-    
-  },
+App({
+  onLaunch(options) {},
 });
 ``` 
 

@@ -1,16 +1,20 @@
 const TYPE_ARRAY = '[object Array]'
 const TYPE_OBJECT = '[object Object]'
 const TYPE_FUNCTION = '[object Function]'
+let appStore = null
+let appGlobalStore = null
 
 export default {
+  setStore,
+  setGlobalStore,
   Page: createPage,
   Component: createComponent
 }
 
 export function createPage(option) {
   option.data = option.data || {}
-  const globalStore = option.globalStore = getApp().globalStore || {}
-  const store = option.store = (option.store || getApp().store || {})
+  const globalStore = getAppGlobalStore()
+  const store = option.store = option.store || getAppStore()
   store.data = store.data || {}
   store._instances = store._instances || {}
   store.update = store.update || function () { return updateState(store) }
@@ -54,7 +58,7 @@ export function createComponent(option) {
   option.didMount = function () {
     this._page = getPage()
     if (this._page.store) { // 兼容组件被常规页面使用的情况
-      this.globalStore = this._page.globalStore
+      this.globalStore = getAppGlobalStore()
       this.store = this._page.store
       this.update = this._page.update
       this.store._instances[this._page.route].unshift(this)
@@ -73,6 +77,22 @@ export function createComponent(option) {
   }
 
   Component(option)
+}
+
+export function setStore(store) {
+  appStore = store
+}
+
+export function setGlobalStore(store) {
+  appGlobalStore = store
+}
+
+function getAppStore() {
+  return appStore || getApp().store || {}
+}
+
+function getAppGlobalStore() {
+  return appGlobalStore || getApp().globalStore || {}
 }
 
 function setComputed(storeData, value, obj, key) {
@@ -133,7 +153,7 @@ function setState(vm, data) {
 }
 
 function getAllData(storeData) {
-  const globalStore = getApp().globalStore
+  const globalStore = getAppGlobalStore()
   if (globalStore && globalStore.data) {
     return Object.assign({ globalData: globalStore.data, $data: globalStore.data }, storeData)
   }
