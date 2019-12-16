@@ -39,6 +39,8 @@ npm i dd-store --save
 
 * create.Page(option) 创建页面
 * create.Component(option) 创建组件
+* setStore(store) 设置全局store // 方案一
+* setGlobalStore(store) 设置全局store // 方案三
 * this.update() 更新页面或组件，在页面、组件、store内使用
 * store.update() 在非页面非组件非store的js文件中使用，需要引入store文件
 
