@@ -1,14 +1,15 @@
 import globalStore from '/stores/globalStore'
+import { setGlobalStore } from 'dd-store'
+
+setGlobalStore(globalStore)
 
 App({
-  
-  globalStore,
 
   onLaunch(options) {
-    
+
   },
-  
+
   onShow(options) {
-    
+
   },
 });

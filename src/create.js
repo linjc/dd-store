@@ -32,7 +32,7 @@ export function createPage(option) {
     store._instances[this.route] = [this]
     globalStore.update = this.update = store.update
     getInitState(store.data, option.data, option.useAll)
-    this.setData(option.data)
+    this.setData(deepCopy(option.data))
     onLoad && onLoad.call(this, query)
   }
 
@@ -63,7 +63,7 @@ export function createComponent(option) {
       this.update = this._page.update
       this.store._instances[this._page.route].unshift(this)
       getInitState(this.store.data, option.data, option.useAll)
-      this.setData(option.data)
+      this.setData(deepCopy(option.data))
     }
     didMount && didMount.call(this)
   }
