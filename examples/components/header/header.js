@@ -1,7 +1,7 @@
 import create from 'dd-store'
 
 create.Component({
-  useAll: true, // 自动注入根页面store.data的所有状态和全局globalStore
+  useAll: true, // 自动注入根页面store.data内的所有状态和$store.data
   mixins: [],
   data: {
     // $data: null,
@@ -13,7 +13,7 @@ create.Component({
   didUnmount() {},
   methods: {
     handleChangeLang() {
-      this.globalStore.onChangeLang()
+      this.$store.onChangeLang()
     },
   },
 });

@@ -28,7 +28,7 @@ westore采用的就是这种方案，该方案好处是适用范围广，各种�
 在默认方案的基础上，增加了每个页面可以根据需要引入独立的store，使用方式和默认方案一样，但相比默认方案，大大减少了每次diff比对的数据量，一定程度提升了些性能；视图数据绑定或方法调用少了一层嵌套，代码更加美观。不过虽然优化了上面的问题点，却存在一个比较大的问题，就是全局store和页面store二者只能选其一，不能同时使用，一般用在页面不需要使用任何全局状态的场景。如果页面需要使用到某个全局状态，就只能把整个页面状态合并到全局状态上使用，这样可能越往后，又变成使用默认方案了。为了解决这个问题，于是有了方案三。
 
 #### 方案三（推荐）：支持多例store，并支持页面同时使用全局store和页面store。
-在方案二的基础上，将全局store命名为globalStore，与页面store区分开来，并修改了使用方式，让页面可以同时是使用页面store和全局store，解决了上面两个方案存在的问题，并保留了它们的优势。
+在方案二的基础上，将全局store命名为$store，与页面store区分开来，并修改了使用方式，让页面可以同时是使用页面store和全局store，解决了上面两个方案存在的问题，并保留了它们的优势。
 
 ## 安装
 ``` js
@@ -205,11 +205,11 @@ create.Page({
 ```
 
 ### 使用方案三（推荐）
-方案三基于方案二将全局store命名为globalStore，并修改了使用方式，将globalStore.data值整体注入页面/组件的data上，并指定属性名为$data（1.6.0前的版本为globalData），通过$data.xxx方式绑定到视图上。
+方案三基于方案二将全局store命名为$store(1.8.2前的版本为globalStore），并修改了使用方式，将globalStore.data值整体注入页面/组件的data上，并指定属性名为$data（1.6.0前的版本为globalData），通过$data.xxx方式绑定到视图上。
 
 #### 在app.js中注入globalStore
 
-将globalStore挂载在app上，所有create.Page()创建的页面都能通过this.globalStore取到globalStore的引用。所有create.Component()创建的组件也会自动从根节点注入globalStore。
+将globalStore挂载在app上，所有create.Page()创建的页面都能通过this.$store取到globalStore的引用。所有create.Component()创建的组件也会自动从根节点注入$store。
 
 ``` js
 import { setGlobalStore } from 'dd-store'
@@ -285,7 +285,7 @@ create.Component({
 
 ``` js
 // 页面、组件内使用
-this.globalStore.data.language = 'zh_cn'
+this.$store.data.language = 'zh_cn'
 this.update()
 ```
 ``` js

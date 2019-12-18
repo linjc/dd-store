@@ -13,7 +13,7 @@ export default {
 
 export function createPage(option) {
   option.data = option.data || {}
-  const globalStore = getAppGlobalStore()
+  const globalStore = option.globalStore = option.$store = getAppGlobalStore()
   const store = option.store = option.store || getAppStore()
   store.data = store.data || {}
   store._instances = store._instances || {}
@@ -58,7 +58,7 @@ export function createComponent(option) {
   option.didMount = function () {
     this._page = getPage()
     if (this._page.store) { // 兼容组件被常规页面使用的情况
-      this.globalStore = getAppGlobalStore()
+      this.globalStore = this.$store = getAppGlobalStore()
       this.store = this._page.store
       this.update = this._page.update
       this.store._instances[this._page.route].unshift(this)

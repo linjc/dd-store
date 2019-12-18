@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dd-store": "^1.7.4"
+    "dd-store": "^1.8.2"
   }
 }

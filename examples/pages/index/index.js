@@ -22,6 +22,11 @@ create.Page({
     privateData: '私有状态'
   },
 
+  onLoad() { 
+    console.log(this.store) // 页面store
+    console.log(this.$store) // 全局store
+  },
+
   handleChangeTitle() {
     this.store.data.title = '首页' + Math.floor(Math.random() * 1000)
     this.update()
