@@ -1,6 +1,8 @@
 const TYPE_ARRAY = '[object Array]'
 const TYPE_OBJECT = '[object Object]'
 const TYPE_FUNCTION = '[object Function]'
+const _Page = Page
+const _Component = Component
 let appStore = null
 let appGlobalStore = null
 
@@ -49,7 +51,7 @@ export function createPage(option) {
     store._instances[this.route] = []
   }
 
-  Page(option)
+  _Page(option)
 }
 
 export function createComponent(option) {
@@ -76,7 +78,7 @@ export function createComponent(option) {
     }
   }
 
-  Component(option)
+  _Component(option)
 }
 
 export function setStore(store) {
