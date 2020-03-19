@@ -19,7 +19,7 @@ export function createPage(option) {
   const store = option.store = option.store || getAppStore()
   store.data = store.data || {}
   store._instances = store._instances || {}
-  store.update = store.update || function () { return updateState(store) }
+  store.update = store.update || function (route) { return updateState(store, route) }
   if (!store._isReadyComputed) {
     setComputed(store.data, store.data)
     store._isReadyComputed = true
@@ -41,7 +41,7 @@ export function createPage(option) {
   const onShow = option.onShow
   option.onShow = function () {
     globalStore.update = store.update
-    store.update()
+    store.update(this.route)
     onShow && onShow.call(this)
   }
 
@@ -162,9 +162,9 @@ function getAllData(storeData) {
   return storeData
 }
 
-function updateState(store) {
+function updateState(store, route) {
   const promiseArr = []
-  const vms = store._instances[getPage().route] || []
+  const vms = store._instances[route || getPage().route] || []
   const storeData = getAllData(store.data)
   vms.forEach(vm => {
     let obj = {}
