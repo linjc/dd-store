@@ -58,7 +58,7 @@ export function createComponent(option) {
   option.data = option.data || {}
   const didMount = option.didMount
   option.didMount = function () {
-    this._page = getPage()
+    this._page = this.$page || getPage()
     if (this._page.store) { // 兼容组件被常规页面使用的情况
       this.globalStore = this.$store = getAppGlobalStore()
       this.store = this._page.store
