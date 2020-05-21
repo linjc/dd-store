@@ -137,7 +137,7 @@ function deepCopy(data) {
 
 function getPage() {
   const pages = getCurrentPages()
-  return pages[pages.length - 1]
+  return pages[pages.length - 1] || {}
 }
 
 function setState(vm, data) {
