@@ -1,9 +1,9 @@
 # dd-store - 钉钉E应用状态管理
 
-- [dd-stores](https://github.com/linjc/dd-stores) - dd-store替代版，支持页面/组件多状态管理，更简洁易用！【推荐】
+- [dd-stores](https://github.com/linjc/dd-stores) - dd-store升级版，支持页面/组件多状态管理，更加灵活独立，适用于支付宝等阿里系小程序！【推荐】
 
 ## 前言
-E应用是钉钉主推的开发企业应用的小程序应用，公司好几款产品也都是使用E应用开发，但E应用和其他小程序一样，都是没有官方实现的状态管理库，一开始我写了一个[Emitter](https://github.com/linjc/dd-store/blob/master/src/emitter.js)类，用事件监听方式去实现全局共享状态管理，解决了各种跨页面组件通信，但这种方式相对繁琐且不够直观，当页面状态比较多时，光监听函数就得写一堆，特别影响代码整洁性。于是乎网上寻找有没有更好的解决方案，最终找到了[westore](https://github.com/Tencent/westore)库，这是由腾讯开源团队研发的微信小程序解决方案，其中针对状态管理的实现很不错，而且还使用专门为小程序开发的[JSON Diff 库](https://github.com/dntzhang/westore/blob/master/packages/westore/utils/diff.js)保证每次以最小的数据量更新状态，比原生setData的性能更好。但有个问题，不能直接在钉钉E应用上使用，问题原因很明显，小程序框架API的差异，比如微信小程序的组件生命周期函数和E应用的组件生命周期函数属性名是不一样的。。。
+E应用是钉钉主推的开发企业应用的小程序应用，公司好几款产品也都是使用E应用开发，但E应用和其他小程序一样，都是没有官方实现的状态管理库，一开始我写了一个[Emitter](https://github.com/linjc/dd-store/blob/master/src/emitter.js)类，用事件监听方式去实现全局共享状态管理，解决了各种跨页面组件通信，但这种方式相对繁琐且不够直观，当页面状态比较多时，光监听函数就得写一堆，特别影响代码整洁性。于是乎网上寻找有没有更好的解决方案，最终找到了[westore](https://github.com/Tencent/westore)库，这是由腾讯开源团队研发的微信小程序解决方案，其中针对状态管理的实现很不错，而且还使用专门为小程序开发的[JSON Diff 库](https://github.com/dntzhang/westore/blob/master/packages/westore/utils/diff.js)保证每次以最小的数据量更新状态，比原生setData的性能更好。但由于小程序框架API的差异，不能直接拿来使用。
 
 所以要在E应用上使用，还需要改动一下，于是在看了源码之后，基于其原理重写了一版，并去除了一些其他功能，只保留状态管理部分，总代码量从500行精简到了200行，另外根据自身理解做了如下优化改进：
 
@@ -48,8 +48,7 @@ npm i dd-store --save
 
 另外创建页面/组件时可选配置option.useAll，如果配置为true，则会自动注入全局globalStore.data和全部store.data内字段值到页面/组件，无需手动声明依赖
 
-***注意：update方法尽量不要与页面跳转相关方法同时使用，主要是防止这种情况：update更新数据，刚好触发当前页面某个组件显示，而此时页面切换，组件获取不到所在页面的store，导致该组件状态无法更新。
-当然，也有解决办法，那就是给update传递当前页面路径，即this.update(route)，路径在页面上可通过this.route取到，在组件上可通过this.$page.route取到***
+***注意：update已作为更新函数被占用，所以在store、页面、组件上不要重定义update字段，避免覆盖。***
 
 ## 使用
 
@@ -128,7 +127,7 @@ create.Page({
     corpName: null,
 
     // 定义store.data没有的属性，则默认为页面私有状态
-    pageName: '页面名称'
+    pageName: 'xxx'
   },
   
 });
@@ -136,15 +135,13 @@ create.Page({
 
 #### 创建组件
 
-使用create.Component创建组件，会自动从根节点注入store
+使用create.Component创建组件
 
 ``` js
 import create from 'dd-store'
 
 create.Component({
 
-  // store, // 组件所在页面的store的引用，自动注入
-  
   useAll: true, // 是否开启自动注入store.data内全部字段，默认false
 
   data: {
@@ -153,7 +150,7 @@ create.Component({
     deptList: null,
 
     //定义store.data没有的属性，则默认为组件私有状态
-    commName: '组件名称'
+    commName: 'xxx'
   },
 
 });
@@ -240,9 +237,9 @@ create.Page({
 
   // $store, // 全局globalStore的引用，在app.js通过setGlobalStore设置绑定后会自动注入，无需手动添加
 
-  useAll: true, // 是否开启自动注入store.data内全部字段 和 $store.data，默认false
+  store: pageStore, // 配置页面store，若不配置，则默认使用通过setStore配置的store（如果有的话）
 
-  store: pageStore, // 添加页面store
+  useAll: true, // 是否开启自动注入store.data内全部字段 和 $store.data，默认false
 
   data: {
     // 声明使用全局状态，为了避免和store.data内字段命名冲突，这里$data取自$store.data整体
@@ -253,7 +250,7 @@ create.Page({
     corpName: null,
 
     // 定义store.data没有的属性，则默认为页面私有状态
-    pageName: '页面名称'
+    pageName: 'xxx'
   },
   
 });
@@ -261,16 +258,14 @@ create.Page({
 ```
 #### 组件使用
 
-只要在组件data上声明$data就可以使用，如果配置了useAll=true，则无需声明即可使用。
+同上create.Page。另外如不独立配置组件store，则默认注入所在根页面的store
 
 ``` js
 import create from 'dd-store'
 
 create.Component({
 
-  // $store, // 全局globalStore的引用，自动注入
-  
-  // store, // 组件所在页面的store的引用，自动注入
+  // store: componentStore, // 配置组件store，如若不配置，则默认使用所在页面的store
 
   useAll: true, // 是否开启自动注入store.data内全部字段 和 $store.data，默认false
 
@@ -283,7 +278,7 @@ create.Component({
     deptList: null,
 
     //定义store.data没有的属性，则默认为组件私有状态
-    commName: '组件名称'
+    commName: 'xxx'
   },
 
 });
