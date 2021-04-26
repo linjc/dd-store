@@ -5,6 +5,7 @@ const _Page = Page
 const _Component = Component
 let appStore = null
 let appGlobalStore = null
+const __stores = new Set();
 
 export default {
   setStore,
@@ -13,26 +14,37 @@ export default {
   Component: createComponent
 }
 
-export function createPage(option) {
-  option.data = option.data || {}
-  const globalStore = option.globalStore = option.$store = getAppGlobalStore()
+function initStores(option) {
   const store = option.store = option.store || getAppStore()
+  const $store = option.globalStore = option.$store = getAppGlobalStore()
+  option.data = option.data || {}
   store.data = store.data || {}
+  $store.data = $store.data || {}
   store._instances = store._instances || {}
-  store.update = store.update || function (route) { return updateState(store, route) }
+  store.update = $store.update = updateState
   if (!store._isReadyComputed) {
     setComputed(store.data, store.data)
     store._isReadyComputed = true
   }
-  if (!globalStore._isReadyComputed) {
-    setComputed(globalStore.data, globalStore.data)
-    globalStore._isReadyComputed = true
+  if (!$store._isReadyComputed) {
+    setComputed($store.data, $store.data)
+    $store._isReadyComputed = true
   }
+  __stores.add(store)
+}
+
+export function createPage(option) {
+  initStores(option)
+  const store = option.store
+  const $store = option.$store
 
   const onLoad = option.onLoad
   option.onLoad = function (query) {
-    store._instances[this.route] = [this]
-    globalStore.update = this.update = store.update
+    this.update = updateState
+    this.store = store
+    this.$store = this.globalStore = $store
+    store._instances[this.route] = store._instances[this.route] || []
+    store._instances[this.route].unshift(this)
     getInitState(store.data, option.data, option.useAll)
     this.setData(deepCopy(option.data))
     onLoad && onLoad.call(this, query)
@@ -40,42 +52,46 @@ export function createPage(option) {
 
   const onShow = option.onShow
   option.onShow = function () {
-    globalStore.update = store.update
-    store.update(this.route)
+    this.update(this.route)
     onShow && onShow.call(this)
   }
 
   const onUnload = option.onUnload
   option.onUnload = function () {
     onUnload && onUnload.call(this)
-    store._instances[this.route] = []
+    store._instances[this.route] = store._instances[this.route].filter(vm => vm !== this)
   }
 
   _Page(option)
 }
 
 export function createComponent(option) {
-  option.data = option.data || {}
+  const notStore = !option.store
+  initStores(option)
+  let store = option.store
+  const $store = option.$store
+
   const didMount = option.didMount
   option.didMount = function () {
-    this._page = this.$page || getPage()
-    if (this._page.store) { // 兼容组件被常规页面使用的情况
-      this.globalStore = this.$store = getAppGlobalStore()
-      this.store = this._page.store
-      this.update = this._page.update
-      this.store._instances[this._page.route].unshift(this)
-      getInitState(this.store.data, option.data, option.useAll)
-      this.setData(deepCopy(option.data))
+    this.update = updateState
+    const _page = this.$page || getPage()
+    if (notStore && _page.store) { // 不设置store则继承页面store
+      store = _page.store
     }
+    this.store = store;
+    this.$store = this.globalStore = $store;
+    store._instances[_page.route] = store._instances[_page.route] || []
+    store._instances[_page.route].unshift(this)
+    getInitState(store.data, option.data, option.useAll)
+    this.setData(deepCopy(option.data))
     didMount && didMount.call(this)
   }
 
   const didUnmount = option.didUnmount
   option.didUnmount = function () {
+    const _page = this.$page || getPage()
     didUnmount && didUnmount.call(this)
-    if (this.store) {
-      this.store._instances[this._page.route] = this.store._instances[this._page.route].filter(vm => vm !== this)
-    }
+    store._instances[_page.route] = store._instances[_page.route].filter(vm => vm !== this)
   }
 
   _Component(option)
@@ -155,25 +171,28 @@ function setState(vm, data) {
 }
 
 function getAllData(storeData) {
-  const globalStore = getAppGlobalStore()
-  if (globalStore && globalStore.data) {
-    return Object.assign({ globalData: globalStore.data, $data: globalStore.data }, storeData)
+  const $store = getAppGlobalStore()
+  if ($store && $store.data) {
+    return Object.assign({ globalData: $store.data, $data: $store.data }, storeData)
   }
   return storeData
 }
 
-function updateState(store, route) {
+function updateState(route) {
   const promiseArr = []
-  const vms = store._instances[route || getPage().route] || []
-  const storeData = getAllData(store.data)
-  vms.forEach(vm => {
-    let obj = {}
-    if (vm.useAll) {
-      obj = storeData
-    } else {
-      Object.keys(vm.data).forEach(key => storeData.hasOwnProperty(key) && (obj[key] = storeData[key]))
-    }
-    promiseArr.push(setState(vm, obj))
+  const _route = route || getPage().route
+  __stores.forEach(store => {
+    const vms = store._instances[_route] || []
+    const storeData = getAllData(store.data)
+    vms.forEach(vm => {
+      let obj = {}
+      if (vm.useAll) {
+        obj = storeData
+      } else {
+        Object.keys(vm.data).forEach(key => storeData.hasOwnProperty(key) && (obj[key] = storeData[key]))
+      }
+      promiseArr.push(setState(vm, obj))
+    })
   })
   return Promise.all(promiseArr)
 }
