@@ -318,7 +318,7 @@ globalStore.update()
 
 以上是个人建议，小伙伴可以根据业务需求自由选择，当然也可以看心情选择，毕竟敲代码，最重要的就是开心啦。
 
-在使用过程中如果遇到问题或有什么建议可以随时在[Issues](https://github.com/linjc/dd-store/issues)进行反馈，或钉钉联系：linjinchun
+在使用过程中如果遇到问题或有什么建议可以随时在[Issues](https://github.com/linjc/dd-store/issues)进行反馈。
 
 ## 快捷链接
 
